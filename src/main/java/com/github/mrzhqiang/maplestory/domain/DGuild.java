@@ -6,12 +6,18 @@ import io.ebean.annotation.NotNull;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.print.attribute.standard.MediaSize;
 import java.util.List;
 
+/**
+ * 公会表
+ * @author haki
+ */
 @Entity
 @Table(name = "guilds")
 public class DGuild extends Model {
@@ -22,6 +28,7 @@ public class DGuild extends Model {
     @NotNull
     @OneToOne
     @DbForeignKey(noConstraint = true)
+    @JoinColumn(name = "leader",referencedColumnName = "id",table = "characters")
     final DCharacter leader;
     @NotNull
     final String name;
@@ -53,6 +60,7 @@ public class DGuild extends Model {
     @NotNull
     Integer signature;
     @OneToOne
+    @JoinColumn(name = "alliance",referencedColumnName = "id",table = "alliances")
     DAlliance alliance;
 
     @OneToMany(mappedBy = "guild")

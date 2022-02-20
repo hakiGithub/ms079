@@ -40,6 +40,7 @@ final class DatabaseModule extends AbstractModule {
         // 例如：datasource.ms079.username = root
         // 这里我们不设置 serverName
         dataSourceConfig.loadSettings(properties, null);
+
         return dataSourceConfig;
     }
 

@@ -13,6 +13,7 @@ import client.inventory.MapleMount;
 import client.inventory.MaplePet;
 import client.inventory.MapleRing;
 import client.inventory.ModifyInventory;
+import com.github.mrzhqiang.maplestory.auth.AuthenticationServer;
 import com.github.mrzhqiang.maplestory.config.ServerProperties;
 import com.github.mrzhqiang.maplestory.di.Injectors;
 import com.github.mrzhqiang.maplestory.domain.DAccount;
@@ -83,7 +84,6 @@ import constants.GameConstants;
 import constants.ServerConstants;
 import handling.MaplePacket;
 import handling.channel.ChannelServer;
-import handling.login.LoginServer;
 import handling.world.CharacterTransfer;
 import handling.world.MapleMessenger;
 import handling.world.MapleMessengerCharacter;
@@ -5524,7 +5524,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ch.removePlayer(this);
         client.updateLoginState(LoginState.CHANGE_CHANNEL, client.getSessionIPAddress());
         String s = this.client.getSessionIPAddress();
-        LoginServer.addIPAuth(s.substring(s.indexOf('/') + 1));
+        AuthenticationServer.addIpAuth(s.substring(s.indexOf('/') + 1));
         client.getSession().write(MaplePacketCreator.getChannelChange(client, Integer.parseInt(toch.getIP().split(":")[1])));
         //LoginServer.addIPAuth(s.substring(s.indexOf(47) + 1, s.length()));
         //try {

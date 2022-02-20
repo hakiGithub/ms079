@@ -2,6 +2,7 @@ package com.github.mrzhqiang.maplestory.auth;
 
 import com.github.mrzhqiang.maplestory.api.RunnableServer;
 import com.github.mrzhqiang.maplestory.config.ServerProperties;
+import com.github.mrzhqiang.maplestory.di.Injectors;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import handling.MapleServerHandler;
@@ -18,49 +19,64 @@ import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 登录 验证server
+ * 代替旧的LoginServer
+ * @author haki
+ */
 @Singleton
 public final class AuthenticationServer implements RunnableServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationServer.class);
 
-    private final Set<String> loginIpAuth = Sets.newConcurrentHashSet();
-    private final Map<Integer, Triple<String, String, Integer>> loginAuth = Maps.newConcurrentMap();
+    private static final Set<String> loginIpAuth = Sets.newConcurrentHashSet();
+    private static final Map<Integer, Triple<String, String, Integer>> loginAuth = Maps.newConcurrentMap();
 
     private Map<Integer, Integer> load = Maps.newConcurrentMap();
     private int usersOn = 0;
     private int userLimit;
 
     private final NioSocketAcceptor acceptor;
-    private final MapleServerHandler serverHandler;
     private final ProtocolCodecFilter codecFilter;
     private final ServerProperties properties;
 
     private boolean finishedShutdown = true;
 
+    /**
+     * 是否只允许管理员验证
+     */
+    private final boolean adminOnly;
+
+    /**
+     * 服务器名字
+     */
+    private final String serverName;
+
     @Inject
-    public AuthenticationServer(NioSocketAcceptor acceptor, MapleServerHandler serverHandler,
+    public AuthenticationServer(NioSocketAcceptor acceptor,
                                 ProtocolCodecFilter codecFilter, ServerProperties properties) {
         this.acceptor = acceptor;
-        this.serverHandler = serverHandler;
         this.codecFilter = codecFilter;
         this.properties = properties;
         this.userLimit = properties.getOnlineLimit();
+        this.adminOnly = properties.isAdminLogin();
+        this.serverName = properties.getName();
     }
 
-    public void put(int characterId, String ip, String tempIp, int channel) {
+    public static void put(int characterId, String ip, String tempIp, int channel) {
         loginAuth.put(characterId, Triple.of(ip, tempIp, channel));
         loginIpAuth.add(ip);
     }
 
-    public boolean containsIpAuth(String ip) {
+    public static boolean containsIpAuth(String ip) {
         return loginIpAuth.contains(ip);
     }
 
-    public void removeIpAuth(String ip) {
+    public static void removeIpAuth(String ip) {
         loginIpAuth.remove(ip);
     }
 
-    public void addIpAuth(String ip) {
+    public static void addIpAuth(String ip) {
         loginIpAuth.add(ip);
     }
 
@@ -101,12 +117,22 @@ public final class AuthenticationServer implements RunnableServer {
         finishedShutdown = false;
     }
 
+
+    public boolean isAdminOnly() {
+        return adminOnly;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
     @Override
     public void init() {
         // 注释掉的代码，已经是默认值，不需要初始化
 //        IoBuffer.setUseDirectBuffer(false);
 //        IoBuffer.setAllocator(new SimpleBufferAllocator());
         acceptor.getFilterChain().addLast("codec", codecFilter);
+        MapleServerHandler serverHandler = Injectors.get(MapleServerHandler.class);
         acceptor.setHandler(serverHandler);
         //acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
         acceptor.getSessionConfig().setTcpNoDelay(true);

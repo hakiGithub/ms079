@@ -9,6 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+/**
+ * 联盟表
+ * @author haki
+ */
 @Entity
 @Table(name = "alliances")
 public class DAlliance extends Model {
@@ -19,20 +23,29 @@ public class DAlliance extends Model {
     String name;
     @NotNull
     @OneToOne
-    @JoinColumn(name = "leader_id")
+    @JoinColumn(name = "leader_id", referencedColumnName = "id", table = "characters")
     DCharacter leader;
+
     @NotNull
     @OneToOne
+    @JoinColumn(name = "guild1", referencedColumnName = "id", table = "guilds")
     DGuild guild1;
+
     @NotNull
     @OneToOne
+    @JoinColumn(name = "guild2", referencedColumnName = "id", table = "guilds")
     DGuild guild2;
     @OneToOne
+    @JoinColumn(name = "guild3", referencedColumnName = "id", table = "guilds")
     DGuild guild3;
     @OneToOne
+    @JoinColumn(name = "guild4", referencedColumnName = "id", table = "guilds")
     DGuild guild4;
     @OneToOne
+    @JoinColumn(name = "guild5", referencedColumnName = "id", table = "guilds")
     DGuild guild5;
+
+
     @NotNull
     String rank1;
     @NotNull

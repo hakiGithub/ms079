@@ -5,7 +5,6 @@ import client.MapleClient;
 import constants.ServerConstants;
 import handling.MaplePacket;
 import handling.SendPacketOpcode;
-import handling.login.LoginServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.HexTool;
@@ -211,10 +210,11 @@ public class LoginPacket {
             LOGGER.debug("getServerList--------------------");
         }
         mplew.writeShort(SendPacketOpcode.SERVERLIST.getValue());
-        mplew.write(serverId); // 0 = Aquilla, 1 = bootes, 2 = cass, 3 = delphinus
+        // 0 = Aquilla, 1 = bootes, 2 = cass, 3 = delphinus
+        mplew.write(serverId);
         mplew.writeMapleAsciiString(serverName);
-        mplew.write(LoginServer.getFlag());
-        mplew.writeMapleAsciiString(LoginServer.getEventMessage());
+        mplew.write(ServerConstants.properties.getFlag());
+        mplew.writeMapleAsciiString(ServerConstants.properties.getLoginEventMessage());
         mplew.writeShort(100);
         mplew.writeShort(100);
 

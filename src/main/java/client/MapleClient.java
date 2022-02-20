@@ -369,6 +369,10 @@ public class MapleClient implements Serializable {
                         updateLoginState(LoginState.NOT_LOGIN, getSessionIPAddress());
                     }
                 }
+                //todo 临时做法 直接返回登录成功
+                if (loginstate == LoginState.LOGGED_IN){
+                    loginok = 0;
+                }
             }
         }
         return loginok;

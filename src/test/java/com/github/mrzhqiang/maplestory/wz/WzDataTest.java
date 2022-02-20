@@ -15,13 +15,17 @@ public class WzDataTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(WzDataTest.class);
 
     @Test
-    public void testData() {
+    public void testData() throws InterruptedException {
+        LOGGER.info("wz 测试加载数据");
         Stopwatch started = Stopwatch.createStarted();
         WzResource.load().subscribe();
+        Thread.sleep(100000);
         WzDirectory root = WzData.STRING.directory();
         Optional<WzFile> cashImg = root.findFile("Cash.img");
         assertTrue(cashImg.isPresent());
         assertEquals("Cash.img", cashImg.get().content().name());
         LOGGER.info("wz 数据加载总用时: {}", started.stop());
+
+
     }
 }

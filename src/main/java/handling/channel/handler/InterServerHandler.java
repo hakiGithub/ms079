@@ -139,8 +139,8 @@ public class InterServerHandler {
         }
 
         c.setPlayer(player);
-        c.setAccID(player.getAccountID());
         c.loadAccountData(player.getAccountID());
+        c.setAccID(player.getAccountID());
 
         ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
 

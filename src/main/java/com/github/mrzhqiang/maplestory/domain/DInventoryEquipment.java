@@ -28,8 +28,6 @@ public class DInventoryEquipment extends Model {
     @NotNull
     Integer dex;
     @NotNull
-    Integer intelligence;
-    @NotNull
     Integer luk;
     @NotNull
     Integer hp;
@@ -123,11 +121,11 @@ public class DInventoryEquipment extends Model {
     }
 
     public Integer getIntelligence() {
-        return intelligence;
+        return id;
     }
 
     public void setIntelligence(Integer intelligence) {
-        this.intelligence = intelligence;
+        this.id = intelligence;
     }
 
     public Integer getLuk() {

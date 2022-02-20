@@ -20,7 +20,7 @@ public class DFamily extends Model {
     Integer id;
     @NotNull
     @OneToOne
-    @JoinColumn(name = "leader_id")
+    @JoinColumn(name = "leader_id",referencedColumnName = "id",table = "characters")
     DCharacter leader;
     @NotNull
     String notice;

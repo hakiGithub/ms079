@@ -37,10 +37,13 @@ public class DCashShopModifiedItem extends Model {
     @NotNull
     Integer meso;
     @NotNull
+    @Column(name = "unk_1")
     Integer unk1;
     @NotNull
+    @Column(name = "unk_2")
     Integer unk2;
     @NotNull
+    @Column(name = "unk_3")
     Integer unk3;
     @NotNull
     Integer extraFlags;

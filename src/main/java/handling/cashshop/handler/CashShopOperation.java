@@ -8,13 +8,13 @@ import client.inventory.ItemFlag;
 import client.inventory.MapleInventoryIdentifier;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleRing;
+import com.github.mrzhqiang.maplestory.auth.AuthenticationServer;
 import com.github.mrzhqiang.maplestory.domain.LoginState;
 import constants.GameConstants;
 import constants.OtherSettings;
 import constants.ServerConstants;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
-import handling.login.LoginServer;
 import handling.world.CharacterTransfer;
 import handling.world.World;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class CashShopOperation {
         CashShopServer.getPlayerStorage().deregisterPlayer(chr);
         c.updateLoginState(LoginState.SERVER_TRANSITION, c.getSessionIPAddress());
         String s = c.getSessionIPAddress();
-        LoginServer.addIPAuth(s.substring(s.indexOf('/') + 1, s.length()));
+        AuthenticationServer.addIpAuth(s.substring(s.indexOf('/') + 1));
         c.getSession().write(MaplePacketCreator.getChannelChange(c, Integer.parseInt(toch.getIP().split(":")[1]))); //发送更换频道的封包信息
         chr.saveToDB(false, true);
         c.setPlayer(null);

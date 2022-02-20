@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -80,7 +81,19 @@ public final class WzDirectory {
                 .filter(it -> !Strings.isNullOrEmpty(it))
                 .filter(it -> !files.isEmpty())
                 .map(WzFile::formatName)
-                .map(files::get);
+                .map(it -> {
+                    // 判断是否是路径
+                    int pathIndexOf = it.indexOf("/");
+                    if (pathIndexOf != -1) {
+                        String path = it.substring(0, pathIndexOf);
+                        WzDirectory wzDirectory = dirs.get(path);
+                        if (Objects.nonNull(wzDirectory)) {
+                            String fileName = it.substring(pathIndexOf + 1);
+                            return wzDirectory.findFile(fileName).orElse(null);
+                        }
+                    }
+                    return files.get(it);
+                });
     }
 
     /**

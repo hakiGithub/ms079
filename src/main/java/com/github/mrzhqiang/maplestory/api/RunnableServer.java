@@ -27,6 +27,7 @@ public interface RunnableServer extends Runnable, Closeable {
      * 关闭。
      * <p>
      * 即关闭 IO 和 DB 相关的资源。
+     *
      */
     @Override
     void close() throws IOException;

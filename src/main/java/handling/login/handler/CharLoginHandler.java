@@ -7,6 +7,7 @@ import client.inventory.IItem;
 import client.inventory.Item;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
+import com.github.mrzhqiang.maplestory.auth.AuthenticationServer;
 import com.github.mrzhqiang.maplestory.domain.Gender;
 import com.github.mrzhqiang.maplestory.domain.LoginState;
 import com.google.common.base.Joiner;
@@ -14,7 +15,6 @@ import com.google.common.base.Strings;
 import constants.ServerConstants;
 import handling.channel.ChannelServer;
 import handling.login.LoginInformationProvider;
-import handling.login.LoginServer;
 import handling.login.LoginWorker;
 import server.MapleItemInformationProvider;
 import server.quest.MapleQuest;
@@ -36,12 +36,12 @@ import java.util.stream.IntStream;
 public final class CharLoginHandler {
 
     private final AutoRegister autoRegister;
-    public final LoginServer loginServer;
+    public final AuthenticationServer authenticationServer;
 
     @Inject
-    public CharLoginHandler(AutoRegister autoRegister, LoginServer loginServer) {
+    public CharLoginHandler(AutoRegister autoRegister, AuthenticationServer authenticationServer) {
         this.autoRegister = autoRegister;
-        this.loginServer = loginServer;
+        this.authenticationServer = authenticationServer;
     }
 
     private boolean loginFailCount(MapleClient client) {
@@ -123,7 +123,7 @@ public final class CharLoginHandler {
                     + " MAC : " + mac + " IP: " + client.getSession().getRemoteAddress().toString() + "\r\n");
             client.updateMacs();
             client.loginAttempt = 0;
-            LoginWorker.registerClient(client, loginServer);
+            LoginWorker.registerClient(client, authenticationServer);
         }
     }
 
@@ -168,7 +168,7 @@ public final class CharLoginHandler {
     }
 
     public void ServerListRequest(MapleClient client) {
-        client.getSession().write(LoginPacket.getServerList(0, loginServer.getServerName(), loginServer.getLoad()));
+        client.getSession().write(LoginPacket.getServerList(0, authenticationServer.getServerName(), authenticationServer.getLoad()));
         //client.getSession().write(MaplePacketCreator.getServerList(1, "Scania", LoginServer.getInstance().getChannels(), 1200));
         //client.getSession().write(MaplePacketCreator.getServerList(2, "Scania", LoginServer.getInstance().getChannels(), 1200));
         //client.getSession().write(MaplePacketCreator.getServerList(3, "Scania", LoginServer.getInstance().getChannels(), 1200));
@@ -179,8 +179,8 @@ public final class CharLoginHandler {
         // 0 = Select world normally
         // 1 = "Since there are many users, you may encounter some..."
         // 2 = "The concurrent users in this world have reached the max"
-        int numPlayer = loginServer.getUsersOn();
-        int userLimit = LoginServer.getUserLimit();
+        int numPlayer = authenticationServer.getUsersOn();
+        int userLimit = authenticationServer.getUserLimit();
         if (numPlayer >= userLimit) {
             c.getSession().write(LoginPacket.getServerStatus(2));
         } else if (numPlayer * 2 >= userLimit) {
@@ -437,7 +437,8 @@ public final class CharLoginHandler {
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        if ((ChannelServer.getInstance(c.getChannel()) == null) || (c.getWorld() != 0)) {
+        ChannelServer channelServer = ChannelServer.getInstance(c.getChannel());
+        if ((channelServer == null) || (c.getWorld() != 0)) {
             c.getSession().close();
             return;
         }
@@ -445,13 +446,13 @@ public final class CharLoginHandler {
             c.getIdleTask().cancel(true);
         }
         String ip = c.getSessionIPAddress();
-        LoginServer.putLoginAuth(charId, ip.substring(ip.indexOf('/') + 1), c.getTempIP(), c.getChannel());
+        AuthenticationServer.put(charId, ip.substring(ip.indexOf('/') + 1), c.getTempIP(), c.getChannel());
         // c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, ip);
         /*
          * if (c.getLoginState() == 2) { c.updateLoginState(2, ip);
          * LOGGER.debug("输出登录2"); } else {
          */
-        c.getSession().write(MaplePacketCreator.getServerIP(Integer.parseInt(ChannelServer.getInstance(c.getChannel()).getIP().split(":")[1]), charId));
+        c.getSession().write(MaplePacketCreator.getServerIP(Integer.parseInt(channelServer.getIP().split(":")[1]), charId));
 
         /*
          * final String currentpw = c.getSecondPassword(); if (slea.available()

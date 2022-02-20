@@ -24,7 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Singleton
+@Deprecated
 public final class LoginServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginServer.class);
@@ -45,6 +46,7 @@ public final class LoginServer {
     private boolean finishedShutdown = true;
     private int usersOn = 0;
 
+    @Inject
     public LoginServer(ServerProperties properties) {
         LoginServer.flag = properties.getFlag();
         LoginServer.userLimit = properties.getOnlineLimit();

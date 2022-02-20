@@ -26,6 +26,7 @@ import client.inventory.IItem;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleWeaponType;
 import constants.GameConstants;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.MapleInventoryManipulator;
@@ -332,7 +333,8 @@ public class PlayerStats implements Serializable {
 
                     element_fire = eqstat.get("incRMAF");
                     element_ice = eqstat.get("incRMAI");
-                    element_light = eqstat.get("incRMAL");
+                    // fixme 先用个默认值代替，注意有NPE场景
+                    element_light = ObjectUtils.defaultIfNull(eqstat.get("incRMAL"), element_light);
                     element_psn = eqstat.get("incRMAS");
                     def = eqstat.get("elemDefault");
                 }

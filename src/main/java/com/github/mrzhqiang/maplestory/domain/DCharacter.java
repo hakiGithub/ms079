@@ -17,6 +17,10 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * 角色表
+ * @author haki
+ */
 @Entity
 @Table(name = "characters", indexes = {
         @Index(name = "account_id", columnList = "account_id"),
@@ -141,6 +145,7 @@ public class DCharacter extends Model {
     @NotNull
     Integer jaguar = 0;
     @NotNull
+    @Column(name = "rank_")
     Integer rank = 1;
     @NotNull
     Integer moveRank = 0;
@@ -161,9 +166,11 @@ public class DCharacter extends Model {
     DCharacter senior;
     @OneToOne
     @DbForeignKey(noConstraint = true)
+    @JoinColumn(name = "junior1",referencedColumnName = "id",table = "characters")
     DCharacter junior1;
     @OneToOne
     @DbForeignKey(noConstraint = true)
+    @JoinColumn(name = "junior2",referencedColumnName = "id",table = "characters")
     DCharacter junior2;
     @NotNull
     Integer currentRep = 0;

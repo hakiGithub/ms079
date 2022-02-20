@@ -1,6 +1,7 @@
 package handling;
 
 import client.MapleClient;
+import com.github.mrzhqiang.maplestory.auth.AuthenticationServer;
 import com.github.mrzhqiang.maplestory.config.ServerProperties;
 import com.github.mrzhqiang.maplestory.di.Injectors;
 import constants.ServerConstants;
@@ -31,7 +32,6 @@ import handling.channel.handler.PlayersHandler;
 import handling.channel.handler.StatsHandling;
 import handling.channel.handler.SummonHandler;
 import handling.channel.handler.UserInterfaceHandler;
-import handling.login.LoginServer;
 import handling.login.handler.CharLoginHandler;
 import handling.mina.MaplePacketDecoder;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -298,7 +298,7 @@ public final class MapleServerHandler extends IoHandlerAdapter {
                 session.close();
                 return;
             }
-            if (!LoginServer.containsIPAuth(IP)) {
+            if (!AuthenticationServer.containsIpAuth(IP)) {
 //                System.out.print("自动断开连接C");
 //                session.close();
 //                return;
@@ -309,12 +309,12 @@ public final class MapleServerHandler extends IoHandlerAdapter {
                 session.close();
                 return;
             }
-        } else if (handler.loginServer.isShutdown()) {
+        } else if (handler.authenticationServer.isShutdown()) {
             LOGGER.warn("自动断开连接E");
             session.close();
             return;
         }
-        LoginServer.removeIPAuth(IP);
+        AuthenticationServer.removeIpAuth(IP);
         byte[] serverRecv = new byte[]{70, 114, 122, (byte) Randomizer.nextInt(255)};
         byte[] serverSend = new byte[]{82, 48, 120, (byte) Randomizer.nextInt(255)};
         byte[] ivRecv = ServerConstants.Use_Fixed_IV ? new byte[]{9, 0, 0x5, 0x5F} : serverRecv;

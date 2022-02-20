@@ -1,9 +1,9 @@
 package server;
 
+import com.github.mrzhqiang.maplestory.auth.AuthenticationServer;
 import com.github.mrzhqiang.maplestory.timer.Timer;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
-import handling.login.LoginServer;
 import handling.world.World.Alliance;
 import handling.world.World.Broadcast;
 import handling.world.World.Family;
@@ -22,11 +22,11 @@ public final class ShutdownServer implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShutdownServer.class);
 
-    private final LoginServer loginServer;
+    private final AuthenticationServer authenticationServer;
 
     @Inject
-    public ShutdownServer(LoginServer loginServer) {
-        this.loginServer = loginServer;
+    public ShutdownServer(AuthenticationServer authenticationServer) {
+        this.authenticationServer = authenticationServer;
     }
 
     @Override
@@ -78,8 +78,8 @@ public final class ShutdownServer implements Runnable {
         LOGGER.debug("服务端关闭事件 2 开始...");
 
         try {
-            if (loginServer != null) {
-                loginServer.shutdown();
+            if (authenticationServer != null) {
+                authenticationServer.close();
             }
             LOGGER.debug("登录伺服器关闭完成...");
         } catch (Exception ignored) {

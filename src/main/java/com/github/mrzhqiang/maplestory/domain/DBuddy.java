@@ -22,9 +22,9 @@ public class DBuddy extends Model {
     @OneToOne
     @JoinColumn(name = "character_id")
     DCharacter owner;
-    @OneToMany
-    @DbForeignKey(noConstraint = true)
-    @JoinColumn(name = "buddy_id")
+//    @OneToMany
+//    @DbForeignKey(noConstraint = true)
+//    @JoinColumn(name = "buddy_id")
     List<DCharacter> buddies;
     @NotNull
     boolean pending;

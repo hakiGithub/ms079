@@ -5,6 +5,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import com.github.mrzhqiang.maplestory.config.ServerProperties;
 import com.github.mrzhqiang.maplestory.di.Injectors;
+import com.github.mrzhqiang.maplestory.timer.Timer;
 import constants.ServerConstants;
 import handling.ByteArrayMaplePacket;
 import handling.MaplePacket;
@@ -23,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import scripting.EventScriptManager;
 import server.MapleSquad;
 import server.MapleSquad.MapleSquadType;
-import com.github.mrzhqiang.maplestory.timer.Timer;
 import server.events.MapleCoconut;
 import server.events.MapleEvent;
 import server.events.MapleEventType;
@@ -179,7 +179,7 @@ public final class ChannelServer implements Serializable {
 
         //temporary while we dont have !addchannel
         INSTANCE_CACHED.remove(channel);
-        serverHandler.handler.loginServer.removeChannel(channel);
+        serverHandler.handler.authenticationServer.removeChannel(channel);
         setFinishShutdown();
 //        if (threadToNotify != null) {
 //            synchronized (threadToNotify) {
@@ -271,7 +271,7 @@ public final class ChannelServer implements Serializable {
         this.channel = channel;
         this.mapFactory.setChannel(channel);
         INSTANCE_CACHED.put(channel, this);
-        serverHandler.handler.loginServer.addChannel(channel);
+        serverHandler.handler.authenticationServer.addChannel(channel);
     }
 
     public static Collection<ChannelServer> getAllInstances() {
@@ -384,7 +384,7 @@ public final class ChannelServer implements Serializable {
         }
         for (int i = 0; i < ch; i++) {
             ChannelServer channelServer = Injectors.get(ChannelServer.class);
-            channelServer.setChannel(i + 1);
+            channelServer.setChannel(i);
             channelServer.run_startup_configurations();
         }
     }

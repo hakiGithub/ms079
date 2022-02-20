@@ -28,7 +28,7 @@ public enum LoginState {
     WAITING("3"),
     CASH_SHOP_TRANSITION("4"),
     CS_LOGGED_IN("5"),
-    CHANGE_CHANNEL("6"),
+    CHANGE_CHANNEL("6")
     ;
 
     final String code;
